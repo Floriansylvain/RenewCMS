@@ -56,7 +56,7 @@ func getDb() *gorm.DB {
 	return db
 }
 
-func initRepositories(db *gorm.DB) *Repositories {
+func getRepositories(db *gorm.DB) *Repositories {
 	return &Repositories{
 		ArticleRepo: gateways.NewArticleRepository(db),
 		UserRepo:    gateways.NewUserRepository(db),
@@ -66,7 +66,7 @@ func initRepositories(db *gorm.DB) *Repositories {
 	}
 }
 
-func initUseCases(repos *Repositories) *UseCases {
+func getUseCases(repos *Repositories) *UseCases {
 	return &UseCases{
 		CreateArticleUseCase: useCases.NewCreateArticleUseCase(repos.ArticleRepo),
 		GetArticleUseCase:    useCases.NewGetArticleUseCase(repos.ArticleRepo),
@@ -87,6 +87,6 @@ func initUseCases(repos *Repositories) *UseCases {
 
 func InitContainer() {
 	db := getDb()
-	repos := initRepositories(db)
-	Container = initUseCases(repos)
+	repos := getRepositories(db)
+	Container = getUseCases(repos)
 }
