@@ -133,6 +133,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	dbUser, err := GetUserFromCredentials(credentials)
 	if err != nil {
 		http.Error(w, LogsErrorMessage, http.StatusForbidden)
+		return
 	}
 
 	_ = SetJwtCookie(&w, dbUser.ID)

@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func GetPageIntegration(w http.ResponseWriter, r *http.Request) {
+func GetPageIntegration(w http.ResponseWriter, _ *http.Request) {
 	navbarTmpl, _ := api.Container.GetPageUseCase.GetPage("componentNavbar", nil)
 	templ, _ := api.Container.GetPageUseCase.GetPage("integration", map[string]any{
 		"Navbar": template.HTML(navbarTmpl),
