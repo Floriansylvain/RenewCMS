@@ -1,9 +1,9 @@
 package pages
 
 import (
-	"GoCMS/api"
-	"GoCMS/api/controllers/auth"
-	"GoCMS/api/controllers/image"
+	"RenewCMS/api"
+	"RenewCMS/api/controllers/auth"
+	"RenewCMS/api/controllers/image"
 	"html/template"
 	"net/http"
 	"os"

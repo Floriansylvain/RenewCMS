@@ -1,9 +1,9 @@
 package route
 
 import (
-	"GoCMS/api/controllers/article"
-	"GoCMS/api/controllers/auth"
-	"GoCMS/api/controllers/pages"
+	"RenewCMS/api/controllers/article"
+	"RenewCMS/api/controllers/auth"
+	"RenewCMS/api/controllers/pages"
 	"encoding/json"
 	"net/http"
 	"os"

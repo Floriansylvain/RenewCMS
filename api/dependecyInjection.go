@@ -1,10 +1,10 @@
 package api
 
 import (
-	"GoCMS/adapters/secondary/gateways"
-	"GoCMS/adapters/secondary/gateways/models"
-	domainGateways "GoCMS/domain/gateways"
-	"GoCMS/useCases"
+	"RenewCMS/adapters/secondary/gateways"
+	"RenewCMS/adapters/secondary/gateways/models"
+	domainGateways "RenewCMS/domain/gateways"
+	"RenewCMS/useCases"
 	"os"
 	"path/filepath"
 

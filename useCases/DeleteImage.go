@@ -1,7 +1,7 @@
 package useCases
 
 import (
-	"GoCMS/domain/gateways"
+	"RenewCMS/domain/gateways"
 )
 
 type DeleteImageUseCase struct {

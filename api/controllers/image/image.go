@@ -1,7 +1,7 @@
 package image
 
 import (
-	"GoCMS/api"
+	"RenewCMS/api"
 	"encoding/json"
 	"net/http"
 	"strconv"

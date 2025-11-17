@@ -1,8 +1,8 @@
 package pages
 
 import (
-	"GoCMS/api"
-	"GoCMS/domain/article"
+	"RenewCMS/api"
+	"RenewCMS/domain/article"
 	"html/template"
 	"net/http"
 	"os"

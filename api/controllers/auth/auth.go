@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"GoCMS/api"
-	"GoCMS/domain/user"
-	"GoCMS/useCases"
+	"RenewCMS/api"
+	"RenewCMS/domain/user"
+	"RenewCMS/useCases"
 	"encoding/json"
 	"net/http"
 	"os"

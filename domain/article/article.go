@@ -1,8 +1,8 @@
 package article
 
 import (
-	entity "GoCMS/adapters/secondary/gateways/models"
-	domain "GoCMS/domain/image"
+	entity "RenewCMS/adapters/secondary/gateways/models"
+	domain "RenewCMS/domain/image"
 	"time"
 )
 

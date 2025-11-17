@@ -2,7 +2,7 @@
 
 OUTPUT_DIR=./bin
 GO_FILE_PATH="./main/main.go"
-PROGRAM_NAME=GoCMS
+PROGRAM_NAME=RenewCMS
 
 platforms=("windows/amd64" "windows/arm64" "linux/amd64" "linux/arm64" "darwin/amd64" "darwin/arm64")
 

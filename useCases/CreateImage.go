@@ -1,8 +1,8 @@
 package useCases
 
 import (
-	"GoCMS/domain/gateways"
-	"GoCMS/domain/image"
+	"RenewCMS/domain/gateways"
+	"RenewCMS/domain/image"
 	"mime/multipart"
 )
 

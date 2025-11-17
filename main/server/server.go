@@ -1,8 +1,8 @@
 package server
 
 import (
-	"GoCMS/api"
-	"GoCMS/main/route"
+	"RenewCMS/api"
+	"RenewCMS/main/route"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"

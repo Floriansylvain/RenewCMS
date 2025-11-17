@@ -1,7 +1,7 @@
 package pages
 
 import (
-	"GoCMS/api"
+	"RenewCMS/api"
 	"net/http"
 	"os"
 

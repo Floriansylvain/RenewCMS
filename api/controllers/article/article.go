@@ -1,10 +1,10 @@
 package article
 
 import (
-	"GoCMS/api"
-	"GoCMS/api/controllers/auth"
-	"GoCMS/domain/article"
-	"GoCMS/useCases"
+	"RenewCMS/api"
+	"RenewCMS/api/controllers/auth"
+	"RenewCMS/domain/article"
+	"RenewCMS/useCases"
 	"encoding/json"
 	"net/http"
 	"strconv"

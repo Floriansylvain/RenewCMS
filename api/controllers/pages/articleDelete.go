@@ -1,8 +1,8 @@
 package pages
 
 import (
-	"GoCMS/api"
-	"GoCMS/api/controllers/article"
+	"RenewCMS/api"
+	"RenewCMS/api/controllers/article"
 	"fmt"
 	"net/http"
 	"strconv"

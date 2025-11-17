@@ -1,8 +1,8 @@
 package useCases
 
 import (
-	"GoCMS/domain/article"
-	"GoCMS/domain/gateways"
+	"RenewCMS/domain/article"
+	"RenewCMS/domain/gateways"
 )
 
 type GetArticleUseCase struct {

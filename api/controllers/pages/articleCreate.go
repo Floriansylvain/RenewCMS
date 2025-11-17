@@ -1,8 +1,8 @@
 package pages
 
 import (
-	"GoCMS/api"
-	"GoCMS/useCases"
+	"RenewCMS/api"
+	"RenewCMS/useCases"
 	"html/template"
 	"net/http"
 	"regexp"

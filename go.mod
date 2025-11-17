@@ -1,4 +1,4 @@
-module GoCMS
+module RenewCMS
 
 go 1.23.0
 

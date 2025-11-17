@@ -1,7 +1,7 @@
 package gateways
 
 import (
-	"GoCMS/domain/gateways"
+	"RenewCMS/domain/gateways"
 	"bytes"
 	"embed"
 	"html/template"
@@ -44,12 +44,12 @@ func (m MailRepository) Send(receiverAddress string, templateName string, data a
 
 	msg := gomail.NewMessage()
 	msg.SetHeaders(map[string][]string{
-		"From":         {"GoCMS <" + from + ">"},
+		"From":         {"RenewCMS <" + from + ">"},
 		"To":           {receiverAddress},
 		"MIME-version": {"1.0"},
 		"Content-Type": {"text/html"},
 		"charset":      {"UTF-8"},
-		"Subject":      {"GoCMS | Action required"},
+		"Subject":      {"RenewCMS | Action required"},
 	})
 	msg.SetBody("text/html", body.String())
 

@@ -1,7 +1,7 @@
 package gateways
 
 import (
-	"GoCMS/domain/image"
+	"RenewCMS/domain/image"
 	"mime/multipart"
 )
 

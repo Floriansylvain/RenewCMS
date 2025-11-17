@@ -1,7 +1,7 @@
 package gateways
 
 import (
-	"GoCMS/domain/article"
+	"RenewCMS/domain/article"
 )
 
 type IArticleRepository interface {

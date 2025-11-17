@@ -7,6 +7,6 @@ services:
       - ${DOCKER_DB_FOLDER}:/app/db/
     environment:
         - PORT=8080
-        - DB_FILE=/app/db/gocms.db
+        - DB_FILE=/app/db/RenewCMS.db
     env_file:
       - ./.env

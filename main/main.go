@@ -1,6 +1,6 @@
 package main
 
-import "GoCMS/main/server"
+import "RenewCMS/main/server"
 
 func main() {
 	router := server.InitServer()

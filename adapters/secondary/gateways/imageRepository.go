@@ -1,9 +1,9 @@
 package gateways
 
 import (
-	entity "GoCMS/adapters/secondary/gateways/models"
-	"GoCMS/domain/gateways"
-	domain "GoCMS/domain/image"
+	entity "RenewCMS/adapters/secondary/gateways/models"
+	"RenewCMS/domain/gateways"
+	domain "RenewCMS/domain/image"
 	"errors"
 	"github.com/google/uuid"
 	"gorm.io/gorm"

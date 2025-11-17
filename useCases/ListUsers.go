@@ -1,8 +1,8 @@
 package useCases
 
 import (
-	"GoCMS/domain/gateways"
-	"GoCMS/domain/user"
+	"RenewCMS/domain/gateways"
+	"RenewCMS/domain/user"
 )
 
 type ListUsersUseCase struct {
