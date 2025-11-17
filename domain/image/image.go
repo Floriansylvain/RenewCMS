@@ -7,16 +7,16 @@ import (
 type Image struct {
 	ID        uint32    `json:"id"`
 	Path      string    `json:"path"`
-	PostID    uint32    `json:"post_id"`
+	ArticleID uint32    `json:"article_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func FromDB(id uint32, path string, postId uint32, createdAt time.Time, updatedAt time.Time) Image {
+func FromDB(id uint32, path string, articleId uint32, createdAt time.Time, updatedAt time.Time) Image {
 	return Image{
 		ID:        id,
 		Path:      path,
-		PostID:    postId,
+		ArticleID: articleId,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}

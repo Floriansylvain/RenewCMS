@@ -42,7 +42,7 @@ of course required, but not necessarily via the `.env` file.
 | Name                 | Type   | Description                                   | Comment                                                                                                               |
 |----------------------|--------|:----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
 | ENVIRONMENT          | string | environment the API is running in             | required, `development` or `production`                                                                               |
-| HOST                 | string | the host domain name for emails and callbacks | required                                                                                                              |
+| HOST                 | string | the host domain name for emails and callbacks | required, if `localhost`: add the port (e.g. `localhost:8080`)                                                        |
 | PORT                 | int    | port the API will use                         | required                                                                                                              |
 | JWT_SECRET           | string | secret for the jwt auth                       | required                                                                                                              |
 | CORS_ALLOWED_ORIGINS | string | allowed origins for CORS                      | required, semicolon separated list                                                                                    |

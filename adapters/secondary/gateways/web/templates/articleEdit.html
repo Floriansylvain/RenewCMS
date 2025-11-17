@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>GoCMS | Post edition</title>
+    <title>GoCMS | Article edition</title>
     {{.Head}}
 </head>
 <body class="text-dark vh-100 d-flex flex-column">
@@ -9,8 +9,8 @@
 <form class="container mt-3 text-black-50 d-flex flex-column h-100" action="edit" method="post">
     <div class="d-flex align-items-center justify-content-between">
         <div>
-            <h1>Post - edition</h1>
-            <label for="postBody">Edition</label>
+            <h1>Article - edition</h1>
+            <label for="articleBody">Edition</label>
         </div>
         {{ if .Alert.Message }}
         <div class="alert {{ if .Alert.IsError }} alert-danger {{ else }} alert-success {{ end }} alert-dismissible"
@@ -30,14 +30,14 @@
         </div>
     </div>
     <div class="text-black-50 d-flex align-items-center justify-content-center h-100 py-3">
-        <textarea id="postBody" name="postBody">{{.Post.Body}}</textarea>
+        <textarea id="articleBody" name="articleBody">{{.Article.Body}}</textarea>
     </div>
 </form>
 
 <script src="/static/tinymce/js/tinymce/tinymce.min.js"></script>
 <script>
     tinymce.init({
-        selector: '#postBody',
+        selector: '#articleBody',
         promotion: false,
         plugins: 'image lists visualblocks',
         toolbar: 'undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | removeformat | image',
@@ -52,7 +52,7 @@
         images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.withCredentials = false;
-            xhr.open('POST', "/post/{{.Post.ID}}/image/create");
+            xhr.open('POST', "/article/{{.Article.ID}}/image/create");
 
             xhr.upload.onprogress = (e) => {
                 progress(e.loaded / e.total * 100);

@@ -1,9 +1,9 @@
 package route
 
 import (
+	"GoCMS/api/controllers/article"
 	"GoCMS/api/controllers/auth"
 	"GoCMS/api/controllers/pages"
-	"GoCMS/api/controllers/post"
 	"encoding/json"
 	"net/http"
 	"os"
@@ -49,7 +49,7 @@ func InitBackendRoutes() *chi.Mux {
 	r.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(auth.Token))
 		r.Use(jwtauth.Authenticator(auth.Token))
-		r.Mount("/post", post.NewPostRouter())
+		r.Mount("/article", article.NewArticleRouter())
 	})
 	r.Mount("/auth", auth.NewAuthRouter())
 

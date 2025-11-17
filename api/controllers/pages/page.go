@@ -140,20 +140,20 @@ func NewPageRouter() http.Handler {
 
 		r.Get("/home", GetHomePage)
 
-		r.Get("/post", GetPostsPage)
+		r.Get("/article", GetArticlesPage)
 
-		r.Get("/post/{id}/edit", GetPostEditPage)
-		r.Post("/post/{id}/edit", PostPostEditPage)
+		r.Get("/article/{id}/edit", GetArticleEditPage)
+		r.Post("/article/{id}/edit", PostArticleEditPage)
 
-		r.Get("/post/{id}/delete", GetPostDeletePage)
+		r.Get("/article/{id}/delete", GetArticleDeletePage)
 
-		r.Get("/post/create", GetPostCreatePage)
-		r.Post("/post/create", PostPostCreatePage)
+		r.Get("/article/create", GetArticleCreatePage)
+		r.Post("/article/create", PostArticleCreatePage)
 
-		r.Post("/post/{id}/image/create", image.PostImage)
+		r.Post("/article/{id}/image/create", image.PostImage)
 
-		r.Get("/post/{id}/publish", GetPostPublishPage)
-		r.Get("/post/{id}/unpublish", GetPostUnpublishPage)
+		r.Get("/article/{id}/publish", GetArticlePublishPage)
+		r.Get("/article/{id}/unpublish", GetArticleUnpublishPage)
 
 		r.Get("/integration", GetPageIntegration)
 	})

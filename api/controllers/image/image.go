@@ -27,7 +27,7 @@ func PostImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = api.Container.UpdatePostUseCase.AddImage(uint32(idInt), newImage.ID)
+	err = api.Container.UpdateArticleUseCase.AddImage(uint32(idInt), newImage.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

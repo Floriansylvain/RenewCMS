@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>GoCMS | Create post</title>
+    <title>GoCMS | Create article</title>
     {{.Head}}
     <style>
         form {
@@ -12,27 +12,27 @@
 <body class="text-dark">
 {{.Navbar}}
 <div class="container mt-3 text-black-50">
-    <h1>Post - creation</h1>
-    <p>Create a new post</p>
-    <form action="create" method="post" class="d-flex align-items-center flex-column gap-3" id="createPostForm">
+    <h1>Article - creation</h1>
+    <p>Create a new article</p>
+    <form action="create" method="post" class="d-flex align-items-center flex-column gap-3" id="createArticleForm">
         <div class="form-floating w-100">
             <input type="text" class="form-control {{ if .PageError.IsError }} is-invalid {{ end }}" id="name"
-                   name="name" placeholder="Chose the post name" value="{{ .Name }}">
+                   name="name" placeholder="Chose the article name" value="{{ .Name }}">
             <label for="name">Name</label>
             <div class="invalid-feedback">{{ .PageError.Message }}</div>
         </div>
-        <button id="createPostButton" class="btn btn-primary w-100" disabled type="submit">
-						<span class="createPostFormButtonLoading visually-hidden spinner-border spinner-border-sm"
+        <button id="createArticleButton" class="btn btn-primary w-100" disabled type="submit">
+						<span class="createArticleFormButtonLoading visually-hidden spinner-border spinner-border-sm"
                               role="status"></span>
-            <span class="createPostFormButtonDefault">Create</span>
+            <span class="createArticleFormButtonDefault">Create</span>
         </button>
     </form>
 </div>
 
 <script>
-    const button = document.querySelector("#createPostButton")
+    const button = document.querySelector("#createArticleButton")
     const inputs = document.querySelectorAll('input')
-    const form = document.querySelector("#createPostForm")
+    const form = document.querySelector("#createArticleForm")
 
     function formFieldsEmpty() {
         return Array.from(inputs).some((input) => input.value === "")
@@ -44,11 +44,11 @@
 
     function setButtonLoading() {
         button.classList.add("disabled")
-        button.querySelector(".createPostFormButtonDefault").classList.add("visually-hidden")
-        button.querySelector(".createPostFormButtonLoading").classList.remove("visually-hidden")
+        button.querySelector(".createArticleFormButtonDefault").classList.add("visually-hidden")
+        button.querySelector(".createArticleFormButtonLoading").classList.remove("visually-hidden")
     }
 
-    function onCreatePostFormSubmit(event) {
+    function onCreateArticleFormSubmit(event) {
         setButtonLoading()
         event.target.submit()
     }
@@ -57,7 +57,7 @@
         if (event.target.tagName === "INPUT") setButtonDisabled()
     }
 
-    form.addEventListener('submit', onCreatePostFormSubmit)
+    form.addEventListener('submit', onCreateArticleFormSubmit)
     window.addEventListener('input', onInput)
     setButtonDisabled()
 </script>

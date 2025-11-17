@@ -29,7 +29,6 @@ type LoginCredentials struct {
 var shouldCookieBeSecure = os.Getenv("ENVIRONMENT") == "production"
 var Token *jwtauth.JWTAuth
 
-// TODO Move into its own file or package that handles api errors
 const LogsErrorMessage = "Access to the requested resource is forbidden due to incorrect password and/or username."
 const BodyErrorMessage = "The request cannot be processed due to a mismatch in the format of the body."
 

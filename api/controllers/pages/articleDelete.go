@@ -2,7 +2,7 @@ package pages
 
 import (
 	"GoCMS/api"
-	"GoCMS/api/controllers/post"
+	"GoCMS/api/controllers/article"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -10,21 +10,21 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func GetPostDeletePage(w http.ResponseWriter, r *http.Request) {
+func GetArticleDeletePage(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 10, 32)
 	if err != nil {
-		http.Error(w, post.IdUint32ErrorMessage, http.StatusBadRequest)
+		http.Error(w, article.IdUint32ErrorMessage, http.StatusBadRequest)
 		return
 	}
 
-	localPost, err := api.Container.GetPostUseCase.GetPost(uint32(id))
+	localArticle, err := api.Container.GetArticleUseCase.GetArticle(uint32(id))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	fmt.Println(localPost.Images)
-	for _, image := range localPost.Images {
+	fmt.Println(localArticle.Images)
+	for _, image := range localArticle.Images {
 		err = api.Container.DeleteImageUseCase.DeleteImage(image.ID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
@@ -32,11 +32,11 @@ func GetPostDeletePage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = api.Container.DeletePostUseCase.DeletePost(uint32(id))
+	err = api.Container.DeleteArticleUseCase.DeleteArticle(uint32(id))
 	if err != nil {
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 		return
 	}
 
-	http.Redirect(w, r, "/post", http.StatusSeeOther)
+	http.Redirect(w, r, "/article", http.StatusSeeOther)
 }

@@ -30,7 +30,7 @@ func mapImageToDomain(image entity.Image) domain.Image {
 	return domain.FromDB(
 		image.ID,
 		image.Path,
-		image.PostID,
+		image.ArticleID,
 		image.CreatedAt,
 		image.UpdatedAt,
 	)

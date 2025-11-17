@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>GoCMS | Posts</title>
+    <title>GoCMS | Articles</title>
     {{.Head}}
 
     <style>
@@ -15,8 +15,8 @@
 <body class="text-dark">
 {{.Navbar}}
 <div class="container mt-3 text-black-50">
-    <h1>Posts</h1>
-    <p>List of your posts</p>
+    <h1>Articles</h1>
+    <p>List of your articles</p>
     <table class="table table-hover">
         <thead>
         <tr>
@@ -30,59 +30,59 @@
         <tbody>
         <tr>
             <td colspan="5" class="text-center">
-                <form action="post/create" method="get">
-                    <button class="btn btn-sm btn-link w-100 h-100" type="submit">Create a new post...</button>
+                <form action="article/create" method="get">
+                    <button class="btn btn-sm btn-link w-100 h-100" type="submit">Create a new article...</button>
                 </form>
             </td>
         </tr>
-        {{ range $post := .Posts }}
+        {{ range $article := .Articles }}
         <tr>
-            <td>{{ $post.Title }}</td>
-            <td class="date">{{ $post.CreatedAt }}</td>
-            <td class="date">{{ $post.UpdatedAt }}</td>
-            <td>{{ if $post.IsOnline }}🟢 Online{{ else }}🟠 Offline{{ end }}</td>
+            <td>{{ $article.Title }}</td>
+            <td class="date">{{ $article.CreatedAt }}</td>
+            <td class="date">{{ $article.UpdatedAt }}</td>
+            <td>{{ if $article.IsOnline }}🟢 Online{{ else }}🟠 Offline{{ end }}</td>
             <td>
-                <a href="/post/{{ $post.ID }}/edit" class="btn btn-outline-primary btn-sm">
+                <a href="/article/{{ $article.ID }}/edit" class="btn btn-outline-primary btn-sm">
                     <svg width="12px" height="12px" fill="currentColor">
                         <use xlink:href="/static/bootstrap-icons.svg#pen"/>
                     </svg>
                 </a>
-                {{ if $post.IsOnline }}
-                <a href="/post/{{ $post.ID }}/unpublish" class="btn btn-outline-info btn-sm">
+                {{ if $article.IsOnline }}
+                <a href="/article/{{ $article.ID }}/unpublish" class="btn btn-outline-info btn-sm">
                     <svg width="12px" height="12px" fill="currentColor">
                         <use xlink:href="/static/bootstrap-icons.svg#eye-slash"/>
                     </svg>
                 </a>
                 {{ else }}
-                <a href="/post/{{ $post.ID }}/publish" class="btn btn-outline-info btn-sm">
+                <a href="/article/{{ $article.ID }}/publish" class="btn btn-outline-info btn-sm">
                     <svg width="12px" height="12px" fill="currentColor">
                         <use xlink:href="/static/bootstrap-icons.svg#eye"/>
                     </svg>
                 </a>
                 {{ end }}
-                <a href="/post/{{ $post.Title }}/delete" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                   data-bs-target="#{{ $post.ID }}">
+                <a href="/article/{{ $article.Title }}/delete" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                   data-bs-target="#{{ $article.ID }}">
                     <svg width=" 12px" height="12px" fill="currentColor">
                         <use xlink:href="/static/bootstrap-icons.svg#trash"/>
                     </svg>
                 </a>
-                <div class="modal fade" id="{{ $post.ID }}" tabindex="-1" aria-labelledby="{{ $post.ID }}Label"
+                <div class="modal fade" id="{{ $article.ID }}" tabindex="-1" aria-labelledby="{{ $article.ID }}Label"
                      aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="{{ $post.ID }}Label">Delete post</h1>
+                                <h1 class="modal-title fs-5" id="{{ $article.ID }}Label">Delete post</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <p>You are about to delete the post <b>« {{ $post.Title }} »</b>, this is definitive,
+                                <p>You are about to delete the post <b>« {{ $article.Title }} »</b>, this is definitive,
                                     are you sure?</p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel
                                 </button>
-                                <a href="/post/{{$post.ID}}/delete" class="btn btn-danger">Delete</a>
+                                <a href="/article/{{$article.ID}}/delete" class="btn btn-danger">Delete</a>
                             </div>
                         </div>
                     </div>
