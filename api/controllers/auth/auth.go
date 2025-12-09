@@ -11,7 +11,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -102,19 +101,6 @@ func GetUserFromCredentials(credentials LoginCredentials) (user.User, error) {
 	return dbUser, nil
 }
 
-func GetNewUser(newUserCredentials RegisterCredentials, verificationCode string) (user.User, error) {
-	createdUser, err := api.Container.CreateUserUseCase.CreateUser(useCases.CreateUserCommand{
-		Username:         newUserCredentials.Username,
-		Password:         newUserCredentials.Password,
-		Email:            newUserCredentials.Email,
-		VerificationCode: verificationCode,
-	})
-	if err != nil {
-		return user.User{}, err
-	}
-	return createdUser, nil
-}
-
 func login(w http.ResponseWriter, r *http.Request) {
 	var credentials LoginCredentials
 
@@ -161,8 +147,11 @@ func register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	verificationCode := uuid.NewString()
-	createdUser, err := GetNewUser(credentials, verificationCode)
+	createdUser, err := api.Container.CreateUserUseCase.CreateUser(useCases.CreateUserCommand{
+		Username: credentials.Username,
+		Password: credentials.Password,
+		Email:    credentials.Email,
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

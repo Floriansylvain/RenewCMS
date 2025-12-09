@@ -3,10 +3,9 @@ package pages
 import (
 	"RenewCMS/api"
 	"RenewCMS/api/controllers/auth"
+	"RenewCMS/useCases"
 	"net/http"
 	"os"
-
-	"github.com/google/uuid"
 )
 
 type RegisterPageError struct {
@@ -80,8 +79,11 @@ func PostRegisterPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	verificationCode := uuid.NewString()
-	createdUser, err := auth.GetNewUser(credentials, verificationCode)
+	createdUser, err := api.Container.CreateUserUseCase.CreateUser(useCases.CreateUserCommand{
+		Username: credentials.Username,
+		Password: credentials.Password,
+		Email:    credentials.Email,
+	})
 	if err != nil {
 		r.Method = http.MethodGet
 		GetRegisterPageHandler(&RegisterPage{
@@ -98,7 +100,7 @@ func PostRegisterPage(w http.ResponseWriter, r *http.Request) {
 
 	_ = api.Container.SendMailUseCase.SendMail(createdUser.Email, "mailValidation", map[string]string{
 		"Host":             os.Getenv("HOST"),
-		"VerificationCode": verificationCode,
+		"VerificationCode": createdUser.VerificationCode,
 	})
 
 	_ = auth.SetJwtCookie(&w, createdUser.ID)

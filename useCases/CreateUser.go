@@ -3,6 +3,8 @@ package useCases
 import (
 	"RenewCMS/domain/gateways"
 	"RenewCMS/domain/user"
+
+	"github.com/google/uuid"
 )
 
 type CreateUserUseCase struct {
@@ -10,10 +12,9 @@ type CreateUserUseCase struct {
 }
 
 type CreateUserCommand struct {
-	Username         string
-	Password         string
-	Email            string
-	VerificationCode string
+	Username string
+	Password string
+	Email    string
 }
 
 func NewCreateUserUseCase(userRepository gateways.IUserRepository) *CreateUserUseCase {
@@ -26,6 +27,6 @@ func (g *CreateUserUseCase) CreateUser(createUser CreateUserCommand) (user.User,
 		createUser.Password,
 		"",
 		createUser.Email,
-		createUser.VerificationCode,
+		uuid.NewString(),
 	))
 }
