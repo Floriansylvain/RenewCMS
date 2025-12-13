@@ -4,10 +4,11 @@ import (
 	"RenewCMS/api"
 	"RenewCMS/main/route"
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"github.com/joho/godotenv"
 	"net/http"
 	"os"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/joho/godotenv"
 )
 
 var possibleEnvFileLocations = []string{".env", "../.env"}
@@ -52,7 +53,7 @@ func InitServer() *chi.Mux {
 }
 
 func StartServer(router *chi.Mux) error {
-	fmt.Println("Server starting on :" + os.Getenv("PORT"))
+	fmt.Println("Server starting on http://" + os.Getenv("HOST"))
 	err := http.ListenAndServe(":"+os.Getenv("PORT"), router)
 	return err
 }
