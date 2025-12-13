@@ -22,11 +22,19 @@ func NewCreateUserUseCase(userRepository gateways.IUserRepository) *CreateUserUs
 }
 
 func (g *CreateUserUseCase) CreateUser(createUser CreateUserCommand) (user.User, error) {
-	return g.userRepository.Create(user.FromApi(
+	rawUuid := uuid.NewString()
+
+	createdUser, err := g.userRepository.Create(user.FromApi(
 		createUser.Username,
 		createUser.Password,
 		"",
 		createUser.Email,
-		uuid.NewString(),
+		rawUuid,
 	))
+	if err != nil {
+		return user.User{}, err
+	}
+
+	createdUser.VerificationCode = rawUuid
+	return createdUser, nil
 }
