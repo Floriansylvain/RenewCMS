@@ -1,18 +1,24 @@
 package api
 
 import (
-	"RenewCMS/adapters/secondary/gateways"
-	"RenewCMS/adapters/secondary/gateways/models"
-	domainGateways "RenewCMS/domain/gateways"
-	"RenewCMS/useCases"
+	domainArticle "RenewCMS/internal/domain/article"
+	domainImage "RenewCMS/internal/domain/image"
+	domainMail "RenewCMS/internal/domain/mail"
+	domainUser "RenewCMS/internal/domain/user"
+	"RenewCMS/internal/infrastructure/mailer"
+	"RenewCMS/internal/infrastructure/persistence"
+	"RenewCMS/internal/infrastructure/persistence/models"
+	"RenewCMS/internal/infrastructure/useCases"
 	"os"
 	"path/filepath"
 
 	"github.com/glebarez/sqlite"
+	"github.com/go-chi/jwtauth/v5"
 	"gorm.io/gorm"
 )
 
 type UseCases struct {
+	Token                *jwtauth.JWTAuth
 	CreateArticleUseCase *useCases.CreateArticleUseCase
 	GetArticleUseCase    *useCases.GetArticleUseCase
 	ListArticlesUseCase  *useCases.ListArticlesUseCase
@@ -23,21 +29,17 @@ type UseCases struct {
 	UpdateUserUseCase    *useCases.UpdateUserUseCase
 	DeleteUserUseCase    *useCases.DeleteUserUseCase
 	ListUsersUseCase     *useCases.ListUsersUseCase
-	GetPageUseCase       *useCases.GetPageUseCase
 	SendMailUseCase      *useCases.SendMailUseCase
 	CreateImageUseCase   *useCases.CreateImageUseCase
 	DeleteImageUseCase   *useCases.DeleteImageUseCase
 }
 
 type Repositories struct {
-	ArticleRepo domainGateways.IArticleRepository
-	UserRepo    domainGateways.IUserRepository
-	ImageRepo   domainGateways.IImageRepository
-	MailRepo    domainGateways.IMailRepository
-	PageRepo    domainGateways.IPageRepository
+	ArticleRepo domainArticle.Repository
+	UserRepo    domainUser.Repository
+	ImageRepo   domainImage.Repository
+	MailRepo    domainMail.Repository
 }
-
-var Container *UseCases
 
 func getDb() *gorm.DB {
 	dbName := os.Getenv("DB_FILE")
@@ -58,16 +60,16 @@ func getDb() *gorm.DB {
 
 func getRepositories(db *gorm.DB) *Repositories {
 	return &Repositories{
-		ArticleRepo: gateways.NewArticleRepository(db),
-		UserRepo:    gateways.NewUserRepository(db),
-		ImageRepo:   gateways.NewImageRepository(db),
-		MailRepo:    gateways.NewMailRepository(),
-		PageRepo:    gateways.NewPageRepository(),
+		ArticleRepo: persistence.NewArticleRepository(db),
+		UserRepo:    persistence.NewUserRepository(db),
+		ImageRepo:   persistence.NewImageRepository(db),
+		MailRepo:    mailer.NewMailRepository(),
 	}
 }
 
 func getUseCases(repos *Repositories) *UseCases {
 	return &UseCases{
+		Token:                jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil),
 		CreateArticleUseCase: useCases.NewCreateArticleUseCase(repos.ArticleRepo),
 		GetArticleUseCase:    useCases.NewGetArticleUseCase(repos.ArticleRepo),
 		ListArticlesUseCase:  useCases.NewListArticlesUseCase(repos.ArticleRepo),
@@ -78,15 +80,14 @@ func getUseCases(repos *Repositories) *UseCases {
 		UpdateUserUseCase:    useCases.NewUpdateUserUseCase(repos.UserRepo),
 		DeleteUserUseCase:    useCases.NewDeleteUserUseCase(repos.UserRepo),
 		ListUsersUseCase:     useCases.NewListUsersUseCase(repos.UserRepo),
-		GetPageUseCase:       useCases.NewGetPageUseCase(repos.PageRepo),
 		SendMailUseCase:      useCases.NewSendMailUseCase(repos.MailRepo),
 		CreateImageUseCase:   useCases.NewCreateImageUseCase(repos.ImageRepo),
 		DeleteImageUseCase:   useCases.NewDeleteImageUseCase(repos.ImageRepo),
 	}
 }
 
-func InitContainer() {
+func InitContainer() *UseCases {
 	db := getDb()
 	repos := getRepositories(db)
-	Container = getUseCases(repos)
+	return getUseCases(repos)
 }
