@@ -2,7 +2,7 @@ package persistence
 
 import (
 	domainArticle "RenewCMS/internal/domain/article"
-	domainImage "RenewCMS/internal/domain/image"
+	"RenewCMS/internal/infrastructure/persistence/mappers"
 	entity "RenewCMS/internal/infrastructure/persistence/models"
 
 	"gorm.io/gorm"
@@ -16,24 +16,6 @@ func NewArticleRepository(db *gorm.DB) *ArticleRepository {
 	return &ArticleRepository{db}
 }
 
-func mapArticleToDomain(article entity.Article) domainArticle.Article {
-	domainImages := make([]*domainImage.Image, len(article.Images))
-	for i, img := range article.Images {
-		dImg := domainImage.FromDB(img.ID, img.Path, img.ArticleID, img.CreatedAt, img.UpdatedAt)
-		domainImages[i] = &dImg
-	}
-
-	return domainArticle.FromDb(
-		article.ID,
-		article.Title,
-		article.Body,
-		domainImages,
-		article.IsOnline,
-		article.CreatedAt,
-		article.UpdatedAt,
-	)
-}
-
 func (a *ArticleRepository) Get(id uint32) (domainArticle.Article, error) {
 	var article entity.Article
 	err := a.db.Model(&entity.Article{}).Preload("Images").First(&article, id).Error
@@ -41,7 +23,7 @@ func (a *ArticleRepository) Get(id uint32) (domainArticle.Article, error) {
 		return domainArticle.Article{}, err
 	}
 
-	return mapArticleToDomain(article), nil
+	return mappers.ArticleToDomain(article), nil
 }
 
 func (a *ArticleRepository) GetByName(name string) (domainArticle.Article, error) {
@@ -51,7 +33,7 @@ func (a *ArticleRepository) GetByName(name string) (domainArticle.Article, error
 		return domainArticle.Article{}, err
 	}
 
-	return mapArticleToDomain(article), nil
+	return mappers.ArticleToDomain(article), nil
 }
 
 func (a *ArticleRepository) Create(article domainArticle.Article) (domainArticle.Article, error) {
@@ -66,7 +48,7 @@ func (a *ArticleRepository) Create(article domainArticle.Article) (domainArticle
 	var createdArticle entity.Article
 	creationResult.Scan(&createdArticle)
 
-	return mapArticleToDomain(createdArticle), nil
+	return mappers.ArticleToDomain(createdArticle), nil
 }
 
 func (a *ArticleRepository) GetAll() []domainArticle.Article {
@@ -78,7 +60,7 @@ func (a *ArticleRepository) GetAll() []domainArticle.Article {
 
 	var domainArticles = make([]domainArticle.Article, 0)
 	for _, article := range articles {
-		domainArticles = append(domainArticles, mapArticleToDomain(article))
+		domainArticles = append(domainArticles, mappers.ArticleToDomain(article))
 	}
 
 	return domainArticles
@@ -97,7 +79,7 @@ func (a *ArticleRepository) UpdateBody(id uint32, body string) (domainArticle.Ar
 		return domainArticle.Article{}, err
 	}
 
-	newArticle := mapArticleToDomain(localArticle)
+	newArticle := mappers.ArticleToDomain(localArticle)
 
 	return newArticle, nil
 }
@@ -115,7 +97,7 @@ func (a *ArticleRepository) UpdateIsOnline(id uint32, isOnline bool) (domainArti
 		return domainArticle.Article{}, err
 	}
 
-	return mapArticleToDomain(localArticle), nil
+	return mappers.ArticleToDomain(localArticle), nil
 }
 
 func (a *ArticleRepository) Delete(id uint32) error {

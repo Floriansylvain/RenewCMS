@@ -2,6 +2,7 @@ package persistence
 
 import (
 	domain "RenewCMS/internal/domain/image"
+	"RenewCMS/internal/infrastructure/persistence/mappers"
 	entity "RenewCMS/internal/infrastructure/persistence/models"
 	"errors"
 	"mime/multipart"
@@ -25,16 +26,6 @@ var contentTypeExtensions = map[string]string{
 	"image/jpeg":    ".jpeg",
 	"image/webp":    ".webp",
 	"image/svg+xml": ".svg",
-}
-
-func mapImageToDomain(image entity.Image) domain.Image {
-	return domain.FromDB(
-		image.ID,
-		image.Path,
-		image.ArticleID,
-		image.CreatedAt,
-		image.UpdatedAt,
-	)
 }
 
 func (i ImageRepository) Create(file multipart.File, fileHeader multipart.FileHeader) (domain.Image, error) {
@@ -68,7 +59,7 @@ func (i ImageRepository) Create(file multipart.File, fileHeader multipart.FileHe
 	var createdImage entity.Image
 	newImage.Scan(&createdImage)
 
-	return mapImageToDomain(createdImage), nil
+	return mappers.ImageToDomain(createdImage), nil
 }
 
 func (i ImageRepository) Delete(id uint32) error {

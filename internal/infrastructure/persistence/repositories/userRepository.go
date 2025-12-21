@@ -2,6 +2,7 @@ package persistence
 
 import (
 	domainUser "RenewCMS/internal/domain/user"
+	"RenewCMS/internal/infrastructure/persistence/mappers"
 	entity "RenewCMS/internal/infrastructure/persistence/models"
 
 	"golang.org/x/crypto/bcrypt"
@@ -16,20 +17,6 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db}
 }
 
-func mapUserToDomain(user entity.User) domainUser.User {
-	return domainUser.FromDb(
-		user.ID,
-		user.Username,
-		user.Password,
-		user.PasswordResetCode,
-		user.Email,
-		user.IsVerified,
-		user.VerificationCode,
-		user.VerificationExpiration,
-		user.CreatedAt, user.UpdatedAt,
-	)
-}
-
 func (u *UserRepository) Get(id uint32) (domainUser.User, error) {
 	var localUser entity.User
 	err := u.db.Model(&entity.User{}).First(&localUser, id).Error
@@ -37,7 +24,7 @@ func (u *UserRepository) Get(id uint32) (domainUser.User, error) {
 		return domainUser.User{}, err
 	}
 
-	return mapUserToDomain(localUser), nil
+	return mappers.UserToDomain(localUser), nil
 }
 
 func (u *UserRepository) Create(user domainUser.User) (domainUser.User, error) {
@@ -58,7 +45,7 @@ func (u *UserRepository) Create(user domainUser.User) (domainUser.User, error) {
 	var createdUser entity.User
 	creationResult.Scan(&createdUser)
 
-	return mapUserToDomain(createdUser),
+	return mappers.UserToDomain(createdUser),
 		nil
 }
 
@@ -72,7 +59,7 @@ func (u *UserRepository) GetAll() []domainUser.User {
 
 	var domainUsers []domainUser.User
 	for _, localUser := range users {
-		domainUsers = append(domainUsers, mapUserToDomain(localUser))
+		domainUsers = append(domainUsers, mappers.UserToDomain(localUser))
 	}
 
 	return domainUsers
@@ -85,7 +72,7 @@ func (u *UserRepository) GetByUsername(username string) (domainUser.User, error)
 		return domainUser.User{}, err
 	}
 
-	return mapUserToDomain(localUser), nil
+	return mappers.UserToDomain(localUser), nil
 }
 
 func (u *UserRepository) GetByEmail(email string) (domainUser.User, error) {
@@ -95,7 +82,7 @@ func (u *UserRepository) GetByEmail(email string) (domainUser.User, error) {
 		return domainUser.User{}, err
 	}
 
-	return mapUserToDomain(localUser), nil
+	return mappers.UserToDomain(localUser), nil
 }
 
 func (u *UserRepository) UpdateVerificationStatus(userId uint32, isVerified bool) (domainUser.User, error) {
@@ -111,7 +98,7 @@ func (u *UserRepository) UpdateVerificationStatus(userId uint32, isVerified bool
 		return domainUser.User{}, err
 	}
 
-	return mapUserToDomain(localUser), nil
+	return mappers.UserToDomain(localUser), nil
 }
 
 func (u *UserRepository) UpdatePassword(userId uint32, password string) (domainUser.User, error) {
@@ -128,7 +115,7 @@ func (u *UserRepository) UpdatePassword(userId uint32, password string) (domainU
 		return domainUser.User{}, err
 	}
 
-	return mapUserToDomain(localUser), nil
+	return mappers.UserToDomain(localUser), nil
 }
 
 func (u *UserRepository) UpdatePasswordResetCode(userId uint32, code string) (domainUser.User, error) {
@@ -145,7 +132,7 @@ func (u *UserRepository) UpdatePasswordResetCode(userId uint32, code string) (do
 		return domainUser.User{}, err
 	}
 
-	return mapUserToDomain(localUser), nil
+	return mappers.UserToDomain(localUser), nil
 }
 
 var _ domainUser.Repository = &UserRepository{}

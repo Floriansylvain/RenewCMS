@@ -18,8 +18,8 @@ func NewCreateArticleUseCase(articleRepository article.Repository) *CreateArticl
 }
 
 func (g *CreateArticleUseCase) CreateArticle(createArticle CreateArticleCommand) (article.Article, error) {
-	return g.articleRepository.Create(article.FromApi(
-		createArticle.Title,
-		createArticle.Body,
-	))
+	return g.articleRepository.Create(article.Article{
+		Title: createArticle.Title,
+		Body:  createArticle.Body,
+	})
 }

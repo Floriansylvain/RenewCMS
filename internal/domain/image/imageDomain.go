@@ -11,13 +11,3 @@ type Image struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
-
-func FromDB(id uint32, path string, articleId uint32, createdAt time.Time, updatedAt time.Time) Image {
-	return Image{
-		ID:        id,
-		Path:      path,
-		ArticleID: articleId,
-		CreatedAt: createdAt,
-		UpdatedAt: updatedAt,
-	}
-}
