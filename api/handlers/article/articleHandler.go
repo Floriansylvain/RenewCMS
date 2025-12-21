@@ -3,9 +3,12 @@ package article
 import (
 	"RenewCMS/api/pkg/apperr"
 	validator "RenewCMS/api/pkg/validator"
-	domainArticle "RenewCMS/internal/domain/article"
+	domain "RenewCMS/internal/domain/article"
 	"RenewCMS/internal/infrastructure/useCases"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -40,26 +43,35 @@ func (h *Handler) GetArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	localArticle, err := h.GetUseCase.GetArticle(uint32(id))
-	if err != nil || !localArticle.IsOnline {
-		http.Error(w, "The requested resource, identified by its unique ID, could not be found on the server.", http.StatusNotFound)
+	article, err := h.GetUseCase.GetOnlineArticle(uint32(id))
+	if err != nil {
+		if errors.Is(err, domain.ErrArticleNotFound) {
+			http.Error(w, "Article not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	articleJson, _ := json.Marshal(localArticle)
-	_, _ = w.Write(articleJson)
+	articleJson, err := json.Marshal(article)
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+
+	if _, err := w.Write(articleJson); err != nil {
+		fmt.Printf("Failed to write response: %v", err)
+	}
 }
 
 func (h *Handler) PostArticle(w http.ResponseWriter, r *http.Request) {
 	var localArticle PostArticle
-	err := json.NewDecoder(r.Body).Decode(&localArticle)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&localArticle); err != nil {
 		http.Error(w, apperr.BodyErrorMessage, http.StatusBadRequest)
 		return
 	}
 
-	err = validator.Validate.Struct(localArticle)
-	if err != nil {
+	if err := validator.Validate.Struct(localArticle); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -69,24 +81,38 @@ func (h *Handler) PostArticle(w http.ResponseWriter, r *http.Request) {
 		Body:  localArticle.Body,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to create article", http.StatusInternalServerError)
 		return
 	}
-	articleJson, _ := json.Marshal(createdArticle)
 
-	_, _ = w.Write(articleJson)
+	articleJson, err := json.Marshal(createdArticle)
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	if _, err := w.Write(articleJson); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
 }
 
 func (h *Handler) ListArticles(w http.ResponseWriter, _ *http.Request) {
-	articles := h.ListUseCase.ListArticles()
-	onlineArticles := make([]domainArticle.Article, 0)
-	for _, localArticle := range articles {
-		if localArticle.IsOnline {
-			onlineArticles = append(onlineArticles, localArticle)
-		}
+	articles, err := h.ListUseCase.ListOnlineArticles()
+	if err != nil {
+		http.Error(w, "Failed to retrieve articles", http.StatusInternalServerError)
+		return
 	}
-	articlesJson, _ := json.Marshal(onlineArticles)
-	_, _ = w.Write(articlesJson)
+
+	articlesJson, err := json.Marshal(articles)
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+
+	if _, err := w.Write(articlesJson); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
 }
 
 func (h *Handler) DeleteArticle(w http.ResponseWriter, r *http.Request) {
@@ -96,11 +122,10 @@ func (h *Handler) DeleteArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.DeleteUseCase.DeleteArticle(uint32(id))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+	if err := h.DeleteUseCase.DeleteArticle(uint32(id)); err != nil {
+		http.Error(w, "Failed to delete article", http.StatusInternalServerError)
 		return
 	}
 
-	_, _ = w.Write([]byte("article deleted"))
+	w.WriteHeader(http.StatusNoContent)
 }

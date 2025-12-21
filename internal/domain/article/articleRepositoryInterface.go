@@ -1,6 +1,11 @@
 package article
 
+type Filters struct {
+	IsOnline *bool
+}
+
 type Repository interface {
+	FindByFilters(filters Filters) ([]Article, error)
 	Get(id uint32) (Article, error)
 	GetByName(name string) (Article, error)
 	GetAll() []Article

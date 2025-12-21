@@ -2,7 +2,13 @@ package article
 
 import (
 	domain "RenewCMS/internal/domain/image"
+	"errors"
 	"time"
+)
+
+var (
+	ErrArticleNotFound = errors.New("article not found")
+	ErrArticleOffline  = errors.New("article is offline")
 )
 
 type Article struct {

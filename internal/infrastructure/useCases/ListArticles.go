@@ -10,6 +10,13 @@ func NewListArticlesUseCase(articleRepository article.Repository) *ListArticlesU
 	return &ListArticlesUseCase{articleRepository}
 }
 
-func (g *ListArticlesUseCase) ListArticles() []article.Article {
-	return g.articleRepository.GetAll()
+func (u *ListArticlesUseCase) ListOnlineArticles() ([]article.Article, error) {
+	online := true
+	return u.articleRepository.FindByFilters(article.Filters{
+		IsOnline: &online,
+	})
+}
+
+func (u *ListArticlesUseCase) ListAllArticles() ([]article.Article, error) {
+	return u.articleRepository.FindByFilters(article.Filters{})
 }
