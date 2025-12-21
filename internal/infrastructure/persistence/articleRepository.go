@@ -1,7 +1,8 @@
 package persistence
 
 import (
-	domain "RenewCMS/internal/domain/article"
+	domainArticle "RenewCMS/internal/domain/article"
+	domainImage "RenewCMS/internal/domain/image"
 	entity "RenewCMS/internal/infrastructure/persistence/models"
 
 	"gorm.io/gorm"
@@ -15,37 +16,51 @@ func NewArticleRepository(db *gorm.DB) *ArticleRepository {
 	return &ArticleRepository{db}
 }
 
-func mapArticleToDomain(article entity.Article) domain.Article {
-	return domain.FromDb(article.ID, article.Title, article.Body, article.Images, article.IsOnline, article.CreatedAt, article.UpdatedAt)
+func mapArticleToDomain(article entity.Article) domainArticle.Article {
+	domainImages := make([]*domainImage.Image, len(article.Images))
+	for i, img := range article.Images {
+		dImg := domainImage.FromDB(img.ID, img.Path, img.ArticleID, img.CreatedAt, img.UpdatedAt)
+		domainImages[i] = &dImg
+	}
+
+	return domainArticle.FromDb(
+		article.ID,
+		article.Title,
+		article.Body,
+		domainImages,
+		article.IsOnline,
+		article.CreatedAt,
+		article.UpdatedAt,
+	)
 }
 
-func (a *ArticleRepository) Get(id uint32) (domain.Article, error) {
+func (a *ArticleRepository) Get(id uint32) (domainArticle.Article, error) {
 	var article entity.Article
 	err := a.db.Model(&entity.Article{}).Preload("Images").First(&article, id).Error
 	if err != nil {
-		return domain.Article{}, err
+		return domainArticle.Article{}, err
 	}
 
 	return mapArticleToDomain(article), nil
 }
 
-func (a *ArticleRepository) GetByName(name string) (domain.Article, error) {
+func (a *ArticleRepository) GetByName(name string) (domainArticle.Article, error) {
 	var article entity.Article
 	err := a.db.Model(&entity.Article{}).Where("title = ?", name).First(&article).Error
 	if err != nil {
-		return domain.Article{}, err
+		return domainArticle.Article{}, err
 	}
 
 	return mapArticleToDomain(article), nil
 }
 
-func (a *ArticleRepository) Create(article domain.Article) (domain.Article, error) {
+func (a *ArticleRepository) Create(article domainArticle.Article) (domainArticle.Article, error) {
 	creationResult := a.db.Create(&entity.Article{
 		Title: article.Title,
 		Body:  article.Body,
 	})
 	if creationResult.Error != nil {
-		return domain.Article{}, creationResult.Error
+		return domainArticle.Article{}, creationResult.Error
 	}
 
 	var createdArticle entity.Article
@@ -54,14 +69,14 @@ func (a *ArticleRepository) Create(article domain.Article) (domain.Article, erro
 	return mapArticleToDomain(createdArticle), nil
 }
 
-func (a *ArticleRepository) GetAll() []domain.Article {
+func (a *ArticleRepository) GetAll() []domainArticle.Article {
 	var articles []entity.Article
 	err := a.db.Model(&entity.Article{}).Find(&articles).Error
 	if err != nil {
-		return []domain.Article{}
+		return []domainArticle.Article{}
 	}
 
-	var domainArticles = make([]domain.Article, 0)
+	var domainArticles = make([]domainArticle.Article, 0)
 	for _, article := range articles {
 		domainArticles = append(domainArticles, mapArticleToDomain(article))
 	}
@@ -69,43 +84,35 @@ func (a *ArticleRepository) GetAll() []domain.Article {
 	return domainArticles
 }
 
-func (a *ArticleRepository) UpdateBody(id uint32, body string) (domain.Article, error) {
+func (a *ArticleRepository) UpdateBody(id uint32, body string) (domainArticle.Article, error) {
 	var localArticle entity.Article
 	err := a.db.Model(&entity.Article{}).First(&localArticle, id).Error
 	if err != nil {
-		return domain.Article{}, err
+		return domainArticle.Article{}, err
 	}
 
 	localArticle.Body = body
 	err = a.db.Save(&localArticle).Error
 	if err != nil {
-		return domain.Article{}, err
+		return domainArticle.Article{}, err
 	}
 
-	newArticle := domain.FromDb(
-		localArticle.ID,
-		localArticle.Title,
-		localArticle.Body,
-		localArticle.Images,
-		localArticle.IsOnline,
-		localArticle.CreatedAt,
-		localArticle.UpdatedAt,
-	)
+	newArticle := mapArticleToDomain(localArticle)
 
 	return newArticle, nil
 }
 
-func (a *ArticleRepository) UpdateIsOnline(id uint32, isOnline bool) (domain.Article, error) {
+func (a *ArticleRepository) UpdateIsOnline(id uint32, isOnline bool) (domainArticle.Article, error) {
 	var localArticle entity.Article
 	err := a.db.Model(&entity.Article{}).First(&localArticle, id).Error
 	if err != nil {
-		return domain.Article{}, err
+		return domainArticle.Article{}, err
 	}
 
 	localArticle.IsOnline = isOnline
 	err = a.db.Save(&localArticle).Error
 	if err != nil {
-		return domain.Article{}, err
+		return domainArticle.Article{}, err
 	}
 
 	return mapArticleToDomain(localArticle), nil
@@ -136,4 +143,4 @@ func (a *ArticleRepository) AddImage(articleId uint32, imageId uint32) error {
 	return nil
 }
 
-var _ domain.Repository = &ArticleRepository{}
+var _ domainArticle.Repository = &ArticleRepository{}
