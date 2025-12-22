@@ -2,7 +2,6 @@ package useCases
 
 import (
 	"RenewCMS/internal/domain/image"
-	"mime/multipart"
 )
 
 type CreateImageUseCase struct {
@@ -13,6 +12,6 @@ func NewCreateImageUseCase(imageRepository image.Repository) *CreateImageUseCase
 	return &CreateImageUseCase{imageRepository}
 }
 
-func (g *CreateImageUseCase) CreateImage(file multipart.File, fileHeader multipart.FileHeader) (image.Image, error) {
-	return g.imageRepository.Create(file, fileHeader)
+func (g *CreateImageUseCase) CreateImage(input image.ImageInput) (image.Image, error) {
+	return g.imageRepository.Create(input)
 }

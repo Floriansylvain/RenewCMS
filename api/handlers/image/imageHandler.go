@@ -1,6 +1,7 @@
 package image
 
 import (
+	"RenewCMS/internal/domain/image"
 	"RenewCMS/internal/infrastructure/useCases"
 	"encoding/json"
 	"net/http"
@@ -32,8 +33,14 @@ func (h *Handler) PostImage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	defer file.Close()
 
-	newImage, err := h.CreateUseCase.CreateImage(file, *fileHeader)
+	newImage, err := h.CreateUseCase.CreateImage(image.ImageInput{
+		Content:     file,
+		Filename:    fileHeader.Filename,
+		Size:        fileHeader.Size,
+		ContentType: fileHeader.Header.Get("Content-Type"),
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -5,7 +5,7 @@ import (
 	"RenewCMS/internal/infrastructure/persistence/mappers"
 	entity "RenewCMS/internal/infrastructure/persistence/models"
 	"errors"
-	"mime/multipart"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -28,11 +28,10 @@ var contentTypeExtensions = map[string]string{
 	"image/svg+xml": ".svg",
 }
 
-func (i ImageRepository) Create(file multipart.File, fileHeader multipart.FileHeader) (domain.Image, error) {
+func (i ImageRepository) Create(input domain.ImageInput) (domain.Image, error) {
 	uploadDir := os.Getenv("UPLOAD_DIR")
 
-	fileBytes := make([]byte, fileHeader.Size)
-	_, err := file.Read(fileBytes)
+	fileBytes, err := io.ReadAll(input.Content)
 	if err != nil {
 		return domain.Image{}, err
 	}
@@ -42,8 +41,7 @@ func (i ImageRepository) Create(file multipart.File, fileHeader multipart.FileHe
 		return domain.Image{}, err
 	}
 
-	contentType := fileHeader.Header.Get("Content-Type")
-	extension := contentTypeExtensions[contentType]
+	extension := contentTypeExtensions[input.ContentType]
 	if extension == "" {
 		return domain.Image{}, errors.New("the file must be a PNG, JPEG, WEBP, or SVG image")
 	}
@@ -64,13 +62,13 @@ func (i ImageRepository) Create(file multipart.File, fileHeader multipart.FileHe
 
 func (i ImageRepository) Delete(id uint32) error {
 	uploadDir := os.Getenv("UPLOAD_DIR")
-	var image entity.Image
-	err := i.db.Model(&entity.Image{}).First(&image, id).Error
+	var entityImage entity.Image
+	err := i.db.Model(&entity.Image{}).First(&entityImage, id).Error
 	if err != nil {
 		return err
 	}
 
-	fileName := filepath.Base(image.Path)
+	fileName := filepath.Base(entityImage.Path)
 	err = os.Remove(filepath.Join(uploadDir, fileName))
 	if err != nil {
 		return err
