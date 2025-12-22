@@ -153,7 +153,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
-	if !h.IsLoggedIn(r) && !h.SomeUsersVerified() {
+	if h.SomeUsersVerified() {
 		http.Error(w, "You are not allowed to create a user. Log in or reset database.", http.StatusForbidden)
 		return
 	}
