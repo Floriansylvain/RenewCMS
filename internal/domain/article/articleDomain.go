@@ -7,6 +7,7 @@ import (
 )
 
 var (
+	ErrInvalidTitle    = errors.New("article's title length should be between 3 and 200 caracters")
 	ErrArticleNotFound = errors.New("article not found")
 	ErrArticleOffline  = errors.New("article is offline")
 )

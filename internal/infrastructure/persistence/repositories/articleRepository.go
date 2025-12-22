@@ -56,8 +56,9 @@ func (a *ArticleRepository) GetByName(name string) (domain.Article, error) {
 
 func (a *ArticleRepository) Create(article domain.Article) (domain.Article, error) {
 	creationResult := a.db.Create(&entity.Article{
-		Title: article.Title,
-		Body:  article.Body,
+		Title:    article.Title,
+		Body:     article.Body,
+		IsOnline: article.IsOnline,
 	})
 	if creationResult.Error != nil {
 		return domain.Article{}, creationResult.Error
