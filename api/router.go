@@ -3,6 +3,7 @@ package api
 import (
 	"RenewCMS/api/handlers/article"
 	"RenewCMS/api/handlers/auth"
+	"RenewCMS/api/handlers/frontend"
 	"RenewCMS/api/middleware"
 	"encoding/json"
 	"net/http"
@@ -14,6 +15,12 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/jwtauth/v5"
 )
+
+func enableLoggingIfDev(r *chi.Mux, routerName string) {
+	if os.Getenv("ENVIRONMENT") == "development" {
+		r.Use(httplog.LoggerWithName(routerName))
+	}
+}
 
 func GetHelloWorld(w http.ResponseWriter, _ *http.Request) {
 	msg, _ := json.Marshal(map[string]string{"message": "Hello World"})
@@ -46,7 +53,8 @@ func NewAuthRouter(container *UseCases) http.Handler {
 func InitBackendRoutes(container *UseCases) *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Use(httplog.LoggerWithName("backend"))
+	enableLoggingIfDev(r, "backend")
+
 	r.Use(middleware.JsonContentTypeMiddleware)
 	r.Get("/", GetHelloWorld)
 	r.Group(func(r chi.Router) {
@@ -59,19 +67,31 @@ func InitBackendRoutes(container *UseCases) *chi.Mux {
 	return r
 }
 
+func InitFrontendRoutes() *chi.Mux {
+	r := chi.NewRouter()
+
+	enableLoggingIfDev(r, "frontend")
+
+	r.Mount("/", frontend.NewFrontendRouter())
+
+	return r
+}
+
 func InitRoutes(container *UseCases) *chi.Mux {
 	backend := InitBackendRoutes(container)
+	frontend := InitFrontendRoutes()
 
 	apiRouter := chi.NewRouter()
 	apiRouter.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ";"),
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", middleware.KeyContentType, "X-CSRF-Token"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
 		MaxAge:           300,
 	}))
 	apiRouter.Mount("/v1", backend)
+	apiRouter.Mount("/", frontend)
 
 	return apiRouter
 }

@@ -32,7 +32,9 @@ type LoginCredentials struct {
 	Password string `json:"password" validate:"required,min=8"`
 }
 
-var shouldCookieBeSecure = os.Getenv("ENVIRONMENT") == "production"
+func shouldCookieBeSecure() bool {
+	return os.Getenv("ENVIRONMENT") == "production"
+}
 
 func removeJwtCookie(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
@@ -40,7 +42,7 @@ func removeJwtCookie(w http.ResponseWriter) {
 		Value:    "",
 		Expires:  time.Now(),
 		MaxAge:   -1,
-		Secure:   shouldCookieBeSecure,
+		Secure:   shouldCookieBeSecure(),
 		HttpOnly: true,
 		Path:     "/",
 	})
@@ -64,7 +66,7 @@ func (h *Handler) SetJwtCookie(w *http.ResponseWriter, userId uint32) error {
 		Name:     "jwt",
 		Value:    tokenString,
 		Expires:  time.Now().Add(24 * time.Hour),
-		Secure:   shouldCookieBeSecure,
+		Secure:   shouldCookieBeSecure(),
 		HttpOnly: true,
 		Path:     "/",
 	})
